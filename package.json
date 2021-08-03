@@ -1,0 +1,14 @@
+{
+  "name": "my_queue",
+  "version": "1.0.0",
+  "description": "just for fun",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "me",
+  "license": "ISC",
+  "dependencies": {
+    "ioredis": "^4.27.6"
+  }
+}
