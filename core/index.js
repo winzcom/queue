@@ -25,19 +25,31 @@ class Queue {
         this.mapper.set(process_name, func);
     }
 
-    addData(data, process_name = '*') {
+    addData(data, options = {}, process_name = '*') {
         // add to the queue
         data.process  = process_name;
-        redis.lpush(this.name, JSON.stringify(data))
+        this.manager.addData(data, { ... options, name: this.name })
+        //redis.lpush(this.name, JSON.stringify(data))
     }
 
     process(data) {
-        data = JSON.parse(data);
+        try {
+            data = JSON.parse(data);
+        } catch (error) {
+            
+        }
         const { process } = data;
+        if(/^\*$/.test(process)) {
+            // process all func
+            for(let [key, func] of this.mapper) {
+                typeof func == 'function' && func(data)
+            }
+            return true
+        }
         const func = this.mapper.get(process)
-
         if(func) {
-            func({ ...data, })
+            const result = func.call(null, data)
+            return result
         }
     }
 

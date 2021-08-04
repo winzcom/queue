@@ -26,13 +26,15 @@ function Redis () {
         brpop: client.brpop,
         zadd: client.zadd,
         brpoplpush: client.brpoplpush,
+        grank: client.zrange,
+        rankpopmin: client.zpopmin,
     }
 
     let redisReady = false, redisConnectionError = false
 
     client.on('ready', () => {
         if(process.env.NODE_ENV == 'development') {
-            client.flushdb();
+            client.flushall()
         }
         redisReady = true
         redisConnectionError = false
@@ -58,6 +60,12 @@ function Redis () {
         })
     }
 
+    function peekElement(key) {
+        const func =  runCommand(commands.grank)
+
+        return func(key, 0, 0, 'WITHSCORES');
+    }
+
     function runCommand(cmd) {
         cmd = promisify(cmd).bind(client)
         return async function() {
@@ -77,6 +85,8 @@ function Redis () {
         lrange: runCommand(commands.lrange),
         zadd: runCommand(commands.zadd),
         brpoplpush: runCommand(commands.brpoplpush),
+        removemin: runCommand(commands.rankpopmin),
+        peekElement,
     }
 }
 

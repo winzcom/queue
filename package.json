@@ -4,11 +4,13 @@
   "description": "just for fun",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node ./index.js"
   },
   "author": "me",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "ioredis": "^4.27.6"
   }
 }

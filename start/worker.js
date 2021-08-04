@@ -3,12 +3,13 @@ const redisService = require('../service/redis');
 
 const queues = new Set()
 
-function it_is(value) {
+function it_is(value, name) {
    process.send(JSON.stringify({
-       new_val: true,
-       value
-   }), (error) => {
-       console.log({ error })
+       data: value
+   }),(error) => {
+       
+   }, {
+       keepOpen: true
    })
 }
 
@@ -38,9 +39,9 @@ async function getQueues() {
             delayer,
         ])
         for(let name of queues) {
-            const val = await redisService.blpop(name, 2)
+            const val = await redisService.blpop(name, 1)
             if(val) {
-                it_is(val)
+                it_is(val, name)
             }
         }
     }
